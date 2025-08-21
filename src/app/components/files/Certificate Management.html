@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Add your existing styles here */
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+        /* Additional styles for the certificates management can be added here */
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-indigo-600 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Certificates Management System</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search certificates..." aria-label="Search certificates" class="bg-indigo-500 text-white placeholder-indigo-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                        <button class="absolute right-3 top-2 text-indigo-200 hover:text-white" aria-label="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto p-4">
+            <!-- Toolbar -->
+            <div class="flex flex-wrap items-center justify-between mb-6">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors" aria-label="Add Certificate" id="addCertificateBtn">
+                        <i class="fas fa-plus mr-2"></i> Add Certificate
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500">1-20 of 250 certificates</span>
+                    <button class="p-2 rounded-lg hover:bg-gray-200" aria-label="Previous Page">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="p-2 rounded-lg hover:bg-gray-200" aria-label="Next Page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Certificates Table -->
+            <div class="card rounded-lg shadow-md border overflow-hidden">
+                <div class="table-container overflow-x-auto">
+                    <table class="min-w-full divide-y">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Reg ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Certificate Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Code</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Expiry Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y">
+                            <!-- Sample Certificate Row 1 -->
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">REG-001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Certificate of Excellence</td>
+                                <td class="px-6 py-4 whitespace-nowrap">ITEM-001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Item One</td>
+                                <td class="px-6 py-4 whitespace-nowrap">2024-12-31</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700 editCertificateBtn" aria-label="Edit Certificate">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 deleteCertificateBtn" aria-label="Delete Certificate">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700 viewCertificateBtn" aria-label="View Certificate">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Additional sample rows would appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Certificate Details Modal (Hidden by default) -->
+            <div id="certificateModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div class="card w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Certificate Details</h2>
+                            <button id="closeModal" class="text-gray-500 hover:text-gray-700" aria-label="Close Modal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Certificate Form -->
+                            <div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="regId">Reg ID</label>
+                                        <input type="text" id="regId" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="certificateName">Certificate Name</label>
+                                        <input type="text" id="certificateName" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="itemCode">Item Code</label>
+                                        <input type="text" id="itemCode" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="itemName">Item Name</label>
+                                        <input type="text" id="itemName" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="expiryDate">Expiry Date</label>
+                                        <input type="date" id="expiryDate" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="pdfImport">Import PDF</label>
+                                        <input type="file" id="pdfImport" accept="application/pdf" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 flex justify-end space-x-3">
+                                    <button id="cancelBtn" class="px-4 py-2 border rounded-lg hover:bg-gray-100" aria-label="Cancel">Cancel</button>
+                                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700" aria-label="Save Changes">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple modal handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const addBtn = document.getElementById('addCertificateBtn');
+            const modal = document.getElementById('certificateModal');
+            const closeBtn = document.getElementById('closeModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            
+            addBtn.onclick = function() {
+                modal.classList.remove('hidden');
+                // Clear form fields when adding a new certificate
+                document.getElementById('regId').value = '';
+                document.getElementById('certificateName').value = '';
+                document.getElementById('itemCode').value = '';
+                document.getElementById('itemName').value = '';
+                document.getElementById('expiryDate').value = '';
+                document.getElementById('pdfImport').value = ''; // Clear PDF input
+            };
+            
+            closeBtn.onclick = function() {
+                modal.classList.add('hidden');
+            };
+
+            // Cancel button functionality
+            cancelBtn.onclick = function() {
+                modal.classList.add('hidden');
+            };
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+
+            // Handle Edit, Delete, and View buttons
+            document.querySelector('tbody').addEventListener('click', function(e) {
+                const row = e.target.closest('tr');
+                if (!row) return; // Click wasn't on a row
+
+                const regId = row.cells[0].innerText;
+                const certificateName = row.cells[1].innerText;
+                const itemCode = row.cells[2].innerText;
+                const itemName = row.cells[3].innerText;
+                const expiryDate = row.cells[4].innerText;
+
+                if (e.target.closest('.editCertificateBtn')) {
+                    // Populate modal with current certificate data for editing
+                    document.getElementById('regId').value = regId;
+                    document.getElementById('certificateName').value = certificateName;
+                    document.getElementById('itemCode').value = itemCode;
+                    document.getElementById('itemName').value = itemName;
+                    document.getElementById('expiryDate').value = expiryDate;
+                    modal.classList.remove('hidden');
+                } else if (e.target.closest('.deleteCertificateBtn')) {
+                    // Confirm and delete row
+                    if (confirm(`Are you sure you want to delete certificate ${certificateName} (${regId})?`)) {
+                        row.remove();
+                    }
+                } else if (e.target.closest('.viewCertificateBtn')) {
+                    // Populate modal with current certificate data for viewing (can make fields read-only)
+                    document.getElementById('regId').value = regId;
+                    document.getElementById('certificateName').value = certificateName;
+                    document.getElementById('itemCode').value = itemCode;
+                    document.getElementById('itemName').value = itemName;
+                    document.getElementById('expiryDate').value = expiryDate;
+                    modal.classList.remove('hidden');
+                    // Optionally, make fields read-only for view mode
+                    // document.querySelectorAll('#certificateModal input').forEach(input => input.readOnly = true);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

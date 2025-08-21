@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: rgb(17, 24, 39);
+                --bg-secondary: rgb(31, 41, 55);
+                --text-primary: rgb(243, 244, 246);
+                --text-secondary: rgb(209, 213, 219);
+                --border-color: rgb(55, 65, 81);
+                --hover-bg: rgb(55, 65, 81);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-primary: rgb(249, 250, 251);
+                --bg-secondary: rgb(255, 255, 255);
+                --text-primary: rgb(17, 24, 39);
+                --text-secondary: rgb(75, 85, 99);
+                --border-color: rgb(229, 231, 235);
+                --hover-bg: rgb(243, 244, 246);
+            }
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            border-color: var(--border-color);
+        }
+
+        th, td {
+            border-color: var(--border-color);
+        }
+
+        tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        input, select {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-indigo-600 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Product Management System</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search products..." aria-label="Search products" class="bg-indigo-500 text-white placeholder-indigo-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                        <button class="absolute right-3 top-2 text-indigo-200 hover:text-white" aria-label="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto p-4">
+            <!-- Toolbar -->
+            <div class="flex flex-wrap items-center justify-between mb-6">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors" aria-label="Add Product" id="addProductBtn">
+                        <i class="fas fa-plus mr-2"></i> Add Product
+                    </button>
+                    <button class="bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 px-4 py-2 rounded-lg transition-colors" aria-label="Export Products">
+                        <i class="fas fa-download mr-2"></i> Export
+                    </button>
+                    <button class="bg-white hover:bg-gray-100 text-gray-800 border border-gray-300 px-4 py-2 rounded-lg transition-colors" aria-label="Filter Products">
+                        <i class="fas fa-sliders-h mr-2"></i> Filters
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-500">1-20 of 250 products</span>
+                    <button class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Previous Page">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Next Page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Product Table -->
+            <div class="card rounded-lg shadow-md border overflow-hidden">
+                <div class="table-container overflow-x-auto">
+                    <table class="min-w-full divide-y">
+                        <thead class="bg-gray-100 dark:bg-gray-800">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Code</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Brand</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Size</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Stock</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Country</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y">
+                            <!-- Sample Product Row 1 -->
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap">PRD-001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Premium Widget</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Acme Corp</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Medium</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">45 in stock</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">$29.99</td>
+                                <td class="px-6 py-4 whitespace-nowrap">USA</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700 editProductBtn" aria-label="Edit Product">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 deleteProductBtn" aria-label="Delete Product">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700 viewProductBtn" aria-label="View Product Details">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Sample Product Row 2 -->
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap">PRD-002</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Deluxe Gadget</td>
+                                <td class="px-6 py-4 whitespace-nowrap">TechNova</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Large</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">12 in stock</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">$49.99</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Germany</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700 editProductBtn" aria-label="Edit Product">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 deleteProductBtn" aria-label="Delete Product">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700 viewProductBtn" aria-label="View Product Details">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Sample Product Row 3 -->
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 whitespace-nowrap">PRD-003</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Basic Component</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Simple Tech</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Small</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Out of stock</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">$9.99</td>
+                                <td class="px-6 py-4 whitespace-nowrap">China</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700 editProductBtn" aria-label="Edit Product">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 deleteProductBtn" aria-label="Delete Product">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                        <button class="text-gray-500 hover:text-gray-700 viewProductBtn" aria-label="View Product Details">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Additional sample rows would appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Product Details Modal (Hidden by default) -->
+            <div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div class="card w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Product Details</h2>
+                            <button id="closeModal" class="text-gray-500 hover:text-gray-700" aria-label="Close Modal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Product Image -->
+                            <div class="border rounded-lg p-4 flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+                                <img src="https://placehold.co/400x300" alt="Product placeholder image" class="max-h-64 object-contain">
+                            </div>
+                            
+                            <!-- Product Form -->
+                            <div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="itemCode">Item Code</label>
+                                        <input type="text" id="itemCode" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="itemName">Item Name</label>
+                                        <input type="text" id="itemName" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1" for="brand">Brand</label>
+                                        <input type="text" id="brand" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1" for="size">Size</label>
+                                            <select id="size" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                                <option>Small</option>
+                                                <option>Medium</option>
+                                                <option>Large</option>
+                                                <option>XL</option>
+                                                <option>Custom</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1" for="stock">Available Stock</label>
+                                            <input type="number" id="stock" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1" for="price">Price</label>
+                                            <input type="number" step="0.01" id="price" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1" for="country">Country</label>
+                                            <select id="country" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                                                <option>USA</option>
+                                                <option>Germany</option>
+                                                <option>China</option>
+                                                <option>Japan</option>
+                                                <option>UK</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 flex justify-end space-x-3">
+                                    <button class="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Cancel">Cancel</button>
+                                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700" aria-label="Save Changes">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple modal handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const addBtn = document.getElementById('addProductBtn');
+            const modal = document.getElementById('productModal');
+            const closeBtn = document.getElementById('closeModal');
+            
+            addBtn.onclick = function() {
+                modal.classList.remove('hidden');
+                // Clear form fields when adding a new product
+                document.getElementById('itemCode').value = '';
+                document.getElementById('itemName').value = '';
+                document.getElementById('brand').value = '';
+                document.getElementById('size').value = 'Small';
+                document.getElementById('stock').value = '';
+                document.getElementById('price').value = '';
+                document.getElementById('country').value = 'USA';
+            };
+            
+            closeBtn.onclick = function() {
+                modal.classList.add('hidden');
+            };
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+
+            // Handle Edit, Delete, and View buttons
+            document.querySelector('tbody').addEventListener('click', function(e) {
+                const row = e.target.closest('tr');
+                if (!row) return; // Click wasn't on a row
+
+                const itemCode = row.cells[0].innerText;
+                const itemName = row.cells[1].innerText;
+                const brand = row.cells[2].innerText;
+                const size = row.cells[3].innerText;
+                const stockText = row.cells[4].querySelector('span').innerText;
+                const stock = parseInt(stockText.replace(' in stock', '').replace('Out of stock', '0'));
+                const price = parseFloat(row.cells[5].innerText.replace('$', ''));
+                const country = row.cells[6].innerText;
+
+                if (e.target.closest('.editProductBtn')) {
+                    // Populate modal with current product data for editing
+                    document.getElementById('itemCode').value = itemCode;
+                    document.getElementById('itemName').value = itemName;
+                    document.getElementById('brand').value = brand;
+                    document.getElementById('size').value = size;
+                    document.getElementById('stock').value = stock;
+                    document.getElementById('price').value = price;
+                    document.getElementById('country').value = country;
+                    modal.classList.remove('hidden');
+                } else if (e.target.closest('.deleteProductBtn')) {
+                    // Confirm and delete row
+                    if (confirm(`Are you sure you want to delete product ${itemName} (${itemCode})?`)) {
+                        row.remove();
+                    }
+                } else if (e.target.closest('.viewProductBtn')) {
+                    // Populate modal with current product data for viewing (can make fields read-only)
+                    document.getElementById('itemCode').value = itemCode;
+                    document.getElementById('itemName').value = itemName;
+                    document.getElementById('brand').value = brand;
+                    document.getElementById('size').value = size;
+                    document.getElementById('stock').value = stock;
+                    document.getElementById('price').value = price;
+                    document.getElementById('country').value = country;
+                    modal.classList.remove('hidden');
+                    // Optionally, make fields read-only for view mode
+                    // document.querySelectorAll('#productModal input, #productModal select').forEach(input => input.readOnly = true);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Settings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: rgb(17, 24, 39);
+                --bg-secondary: rgb(31, 41, 55);
+                --text-primary: rgb(243, 244, 246);
+                --text-secondary: rgb(209, 213, 219);
+                --border-color: rgb(55, 65, 81);
+                --hover-bg: rgb(55, 65, 81);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-primary: rgb(249, 250, 251);
+                --bg-secondary: rgb(255, 255, 255);
+                --text-primary: rgb(17, 24, 39);
+                --text-secondary: rgb(75, 85, 99);
+                --border-color: rgb(229, 231, 235);
+                --hover-bg: rgb(243, 244, 246);
+            }
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        input, select {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-indigo-600 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold">User  Settings</h1>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto p-4">
+            <!-- Alert Messages -->
+            <div id="alertContainer"></div>
+
+            <!-- User Settings Form -->
+            <div class="card rounded-lg shadow-md border overflow-hidden p-6">
+                <h2 class="text-xl font-bold mb-4">Update Your Information</h2>
+                <form id="userSettingsForm" class="space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <img id="profilePic" src="https://via.placeholder.com/100" alt="Profile Picture" class="profile-pic">
+                        <div>
+                            <label class="block text-sm font-medium mb-1" for="profilePicture">Profile Picture</label>
+                            <input type="file" id="profilePicture" accept="image/*" class="border rounded-lg px-3 py-2" onchange="previewImage(event)">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" for="userName">Name *</label>
+                        <input type="text" id="userName" class="w-full rounded-lg border px-3 py-2" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="nameError">Name is required</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" for="userEmail">Email *</label>
+                        <input type="email" id="userEmail" class="w-full rounded-lg border px-3 py-2" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="emailError">Valid email is required</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" for="userPassword">Password *</label>
+                        <input type="password" id="userPassword" class="w-full rounded-lg border px-3 py-2" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="passwordError">Password is required</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" for="userConfirmPassword">Confirm Password *</label>
+                        <input type="password" id="userConfirmPassword" class="w-full rounded-lg border px-3 py-2" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="confirmPasswordError">Passwords must match</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" for="userRole">Role *</label>
+                        <select id="userRole" class="w-full rounded-lg border px-3 py-2" required>
+                            <option value="">Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User </option>
+                            <option value="manager">Manager</option>
+                        </select>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="roleError">Role is required</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" for="userDepartment">Department *</label>
+                        <input type="text" id="userDepartment" class="w-full rounded-lg border px-3 py-2" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="departmentError">Department is required</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1" for="userStatus">Status *</label>
+                        <select id="userStatus" class="w-full rounded-lg border px-3 py-2" required>
+                            <option value="">Select Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="statusError">Status is required</div>
+                    </div>
+                </form>
+                
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button type="button" class="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" id="cancelBtn">
+                        Cancel
+                    </button>
+                    <button type="button" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors" id="saveSettingsBtn">
+                        Save Changes
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profilePic').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+            const userSettingsForm = document.getElementById('userSettingsForm');
+
+            saveSettingsBtn.onclick = function() {
+                const userName = document.getElementById('userName').value;
+                const userEmail = document.getElementById('userEmail').value;
+                const userPassword = document.getElementById('userPassword').value;
+                const userConfirmPassword = document.getElementById('userConfirmPassword').value;
+                const userRole = document.getElementById('userRole').value;
+                const userDepartment = document.getElementById('userDepartment').value;
+                const userStatus = document.getElementById('userStatus').value;
+
+                // Simple validation
+                let valid = true;
+                document.getElementById('nameError').classList.add('hidden');
+                document.getElementById('emailError').classList.add('hidden');
+                document.getElementById('passwordError').classList.add('hidden');
+                document.getElementById('confirmPasswordError').classList.add('hidden');
+                document.getElementById('roleError').classList.add('hidden');
+                document.getElementById('departmentError').classList.add('hidden');
+                document.getElementById('statusError').classList.add('hidden');
+
+                if (!userName) {
+                    document.getElementById('nameError').classList.remove('hidden');
+                    valid = false;
+                }
+                if (!userEmail) {
+                    document.getElementById('emailError').classList.remove('hidden');
+                    valid = false;
+                }
+                if (!userPassword) {
+                    document.getElementById('passwordError').classList.remove('hidden');
+                    valid = false;
+                }
+                if (userPassword !== userConfirmPassword) {
+                    document.getElementById('confirmPasswordError').classList.remove('hidden');
+                    valid = false;
+                }
+                if (!userRole) {
+                    document.getElementById('roleError').classList.remove('hidden');
+                    valid = false;
+                }
+                if (!userDepartment) {
+                    document.getElementById('departmentError').classList.remove('hidden');
+                    valid = false;
+                }
+                if (!userStatus) {
+                    document.getElementById('statusError').classList.remove('hidden');
+                    valid = false;
+                }
+
+                if (valid) {
+                    // Simulate saving settings
+                    alert('Settings saved successfully!');
+                    // Here you can add your logic to save the settings
+                }
+            };
+
+            document.getElementById('cancelBtn').onclick = function() {
+                // Logic to cancel changes (e.g., reset form or navigate away)
+                userSettingsForm.reset();
+                document.getElementById('profilePic').src = 'https://via.placeholder.com/100'; // Reset profile picture
+            };
+        });
+    </script>
+</body>
+</html>

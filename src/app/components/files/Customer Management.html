@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: rgb(17, 24, 39);
+                --bg-secondary: rgb(31, 41, 55);
+                --text-primary: rgb(243, 244, 246);
+                --text-secondary: rgb(209, 213, 219);
+                --border-color: rgb(55, 65, 81);
+                --hover-bg: rgb(55, 65, 81);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-primary: rgb(249, 250, 251);
+                --bg-secondary: rgb(255, 255, 255);
+                --text-primary: rgb(17, 24, 39);
+                --text-secondary: rgb(75, 85, 99);
+                --border-color: rgb(229, 231, 235);
+                --hover-bg: rgb(243, 244, 246);
+            }
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            border-color: var(--border-color);
+        }
+
+        th, td {
+            border-color: var(--border-color);
+        }
+
+        tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        input, select {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-indigo-600 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Customer Management System</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search customers..." aria-label="Search customers" class="bg-indigo-500 text-white placeholder-indigo-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                        <button class="absolute right-3 top-2 text-indigo-200 hover:text-white" aria-label="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto p-4">
+            <!-- Toolbar -->
+            <div class="flex flex-wrap items-center justify-between mb-6">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors" aria-label="Add Customer" id="addCustomerBtn">
+                        <i class="fas fa-plus mr-2"></i> Add Customer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Customer Table -->
+            <div class="card rounded-lg shadow-md border overflow-hidden">
+                <div class="table-container overflow-x-auto">
+                    <table class="min-w-full divide-y">
+                        <thead class="bg-gray-100 dark:bg-gray-800">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Customer ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Phone</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Address</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y" id="customerTableBody">
+                            <!-- Dummy Customer Rows -->
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="CUST-001">
+                                <td class="px-6 py-4 whitespace-nowrap">CUST-001</td>
+                                <td class="px-6 py-4 whitespace-nowrap">John Doe</td>
+                                <td class="px-6 py-4 whitespace-nowrap">john@example.com</td>
+                                <td class="px-6 py-4 whitespace-nowrap">123-456-7890</td>
+                                <td class="px-6 py-4 whitespace-nowrap">123 Elm St, Springfield</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700 editCustomerBtn" aria-label="Edit Customer" data-id="CUST-001">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 deleteCustomerBtn" aria-label="Delete Customer" data-id="CUST-001">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="CUST-002">
+                                <td class="px-6 py-4 whitespace-nowrap">CUST-002</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Jane Smith</td>
+                                <td class="px-6 py-4 whitespace-nowrap">jane@example.com</td>
+                                <td class="px-6 py-4 whitespace-nowrap">987-654-3210</td>
+                                <td class="px-6 py-4 whitespace-nowrap">456 Oak St, Springfield</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex space-x-2">
+                                        <button class="text-blue-500 hover:text-blue-700 editCustomerBtn" aria-label="Edit Customer" data-id="CUST-002">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="text-red-500 hover:text-red-700 deleteCustomerBtn" aria-label="Delete Customer" data-id="CUST-002">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Customer Details Modal (Hidden by default) -->
+            <div id="customerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div class="card w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold" id="modalTitle">Add Customer</h2>
+                            <button id="closeModal" class="text-gray-500 hover:text-gray-700" aria-label="Close Modal">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1" for="customerId">Customer ID</label>
+                                <input type="text" id="customerId" class="w-full rounded-lg border px-3 py-2" aria-required="true" disabled>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1" for="customerName">Name</label>
+                                <input type="text" id="customerName" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1" for="customerEmail">Email</label>
+                                <input type="email" id="customerEmail" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1" for="customerPhone">Phone</label>
+                                <input type="text" id="customerPhone" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1" for="customerAddress">Address</label>
+                                <input type="text" id="customerAddress" class="w-full rounded-lg border px-3 py-2" aria-required="true">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button class="px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700" id="cancelBtn" aria-label="Cancel">Cancel</button>
+                            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700" id="saveCustomerBtn" aria-label="Save Customer">Save Customer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple modal handling and customer management
+        document.addEventListener('DOMContentLoaded', function() {
+            const addBtn = document.getElementById('addCustomerBtn');
+            const modal = document.getElementById('customerModal');
+            const closeBtn = document.getElementById('closeModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const saveCustomerBtn = document.getElementById('saveCustomerBtn');
+            const customerTableBody = document.getElementById('customerTableBody');
+            let currentCustomerId = null;
+
+            // Open modal to add a new customer
+            addBtn.onclick = function() {
+                modal.classList.remove('hidden');
+                document.getElementById('modalTitle').innerText = 'Add Customer';
+                document.getElementById('customerId').value = ''; // Reset Customer ID
+                document.getElementById('customerName').value = '';
+                document.getElementById('customerEmail').value = '';
+                document.getElementById('customerPhone').value = '';
+                document.getElementById('customerAddress').value = '';
+                currentCustomerId = null; // Reset current customer ID
+            };
+            
+            // Close modal
+            closeBtn.onclick = function() {
+                modal.classList.add('hidden');
+            };
+
+            cancelBtn.onclick = function() {
+                modal.classList.add('hidden');
+            };
+
+            // Save customer (add or edit)
+            saveCustomerBtn.onclick = function() {
+                const customerId = currentCustomerId || `CUST-${Date.now()}`;
+                const customerName = document.getElementById('customerName').value;
+                const customerEmail = document.getElementById('customerEmail').value;
+                const customerPhone = document.getElementById('customerPhone').value;
+                const customerAddress = document.getElementById('customerAddress').value;
+
+                if (currentCustomerId) {
+                    // Edit existing customer
+                    const row = document.querySelector(`tr[data-id="${currentCustomerId}"]`);
+                    row.cells[1].innerText = customerName;
+                    row.cells[2].innerText = customerEmail;
+                    row.cells[3].innerText = customerPhone;
+                    row.cells[4].innerText = customerAddress;
+                } else {
+                    // Add new customer row to the table
+                    const newRow = `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="${customerId}">
+                            <td class="px-6 py-4 whitespace-nowrap">${customerId}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${customerName}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${customerEmail}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${customerPhone}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">${customerAddress}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-500 hover:text-blue-700 editCustomerBtn" aria-label="Edit Customer" data-id="${customerId}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700 deleteCustomerBtn" aria-label="Delete Customer" data-id="${customerId}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    customerTableBody.insertAdjacentHTML('beforeend', newRow);
+                }
+                modal.classList.add('hidden');
+
+                // Clear input fields
+                document.getElementById('customerName').value = '';
+                document.getElementById('customerEmail').value = '';
+                document.getElementById('customerPhone').value = '';
+                document.getElementById('customerAddress').value = '';
+            };
+
+            // Edit customer
+            customerTableBody.addEventListener('click', function(e) {
+                if (e.target.closest('.editCustomerBtn')) {
+                    const row = e.target.closest('tr');
+                    currentCustomerId = row.dataset.id;
+                    document.getElementById('modalTitle').innerText = 'Edit Customer';
+                    document.getElementById('customerId').value = currentCustomerId; // Keep Customer ID disabled
+                    document.getElementById('customerName').value = row.cells[1].innerText;
+                    document.getElementById('customerEmail').value = row.cells[2].innerText;
+                    document.getElementById('customerPhone').value = row.cells[3].innerText;
+                    document.getElementById('customerAddress').value = row.cells[4].innerText;
+                    modal.classList.remove('hidden');
+                }
+
+                // Delete customer
+                if (e.target.closest('.deleteCustomerBtn')) {
+                    const row = e.target.closest('tr');
+                    customerTableBody.removeChild(row);
+                }
+            });
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

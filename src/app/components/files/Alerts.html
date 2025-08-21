@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alerts Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: rgb(17, 24, 39);
+                --bg-secondary: rgb(31, 41, 55);
+                --text-primary: rgb(243, 244, 246);
+                --text-secondary: rgb(209, 213, 219);
+                --border-color: rgb(55, 65, 81);
+                --hover-bg: rgb(55, 65, 81);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-primary: rgb(249, 250, 251);
+                --bg-secondary: rgb(255, 255, 255);
+                --text-primary: rgb(17, 24, 39);
+                --text-secondary: rgb(75, 85, 99);
+                --border-color: rgb(229, 231, 235);
+                --hover-bg: rgb(243, 244, 246);
+            }
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            border-color: var(--border-color);
+        }
+
+        th, td {
+            border-color: var(--border-color);
+        }
+
+        tr:hover {
+            background-color: var(--hover-bg);
+        }
+
+        input, select {
+            background-color: var(--bg-secondary);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-red-600 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Alerts Dashboard</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search alerts..." aria-label="Search alerts" class="bg-red-500 text-white placeholder-red-200 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300">
+                        <button class="absolute right-3 top-2 text-red-200 hover:text-white" aria-label="Search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto p-4 space-y-8">
+            <!-- Item Expiry Alerts -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-hourglass-end text-red-500 mr-3"></i> Item Expiry Alerts
+                </h2>
+                <div class="card rounded-lg shadow-md border overflow-hidden">
+                    <div class="table-container overflow-x-auto">
+                        <table class="min-w-full divide-y">
+                            <thead class="bg-gray-100 dark:bg-gray-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Notification ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Quantity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Expiry Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y" id="itemExpiryTableBody">
+                                <!-- Dummy Item Expiry Rows -->
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="EXP-001">
+                                    <td class="px-6 py-4 whitespace-nowrap">EXP-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">ITM-101</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Milk (2L)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">5</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-red-500 font-semibold">2023-12-31</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="text-red-500 hover:text-red-700 deleteNotificationBtn" aria-label="Delete Notification" data-id="EXP-001">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="EXP-002">
+                                    <td class="px-6 py-4 whitespace-nowrap">EXP-002</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">ITM-105</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Yogurt (Strawberry)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">12</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-red-500 font-semibold">2024-01-15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="text-red-500 hover:text-red-700 deleteNotificationBtn" aria-label="Delete Notification" data-id="EXP-002">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Low Stock Alerts -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-boxes-stacked text-yellow-500 mr-3"></i> Low Stock Alerts
+                </h2>
+                <div class="card rounded-lg shadow-md border overflow-hidden">
+                    <div class="table-container overflow-x-auto">
+                        <table class="min-w-full divide-y">
+                            <thead class="bg-gray-100 dark:bg-gray-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Notification ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Item Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Current Quantity</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Reorder Level</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Notification Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y" id="lowStockTableBody">
+                                <!-- Dummy Low Stock Rows -->
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="LSTK-001">
+                                    <td class="px-6 py-4 whitespace-nowrap">LSTK-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">ITM-203</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Printer Paper (Ream)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-yellow-500 font-semibold">8</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">10</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">2023-12-20</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="text-red-500 hover:text-red-700 deleteNotificationBtn" aria-label="Delete Notification" data-id="LSTK-001">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="LSTK-002">
+                                    <td class="px-6 py-4 whitespace-nowrap">LSTK-002</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">ITM-310</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">AA Batteries (Pack)</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-yellow-500 font-semibold">3</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">5</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">2023-12-18</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="text-red-500 hover:text-red-700 deleteNotificationBtn" aria-label="Delete Notification" data-id="LSTK-002">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certification Expiry Alerts -->
+            <div>
+                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-certificate text-blue-500 mr-3"></i> Certification Expiry Alerts
+                </h2>
+                <div class="card rounded-lg shadow-md border overflow-hidden">
+                    <div class="table-container overflow-x-auto">
+                        <table class="min-w-full divide-y">
+                            <thead class="bg-gray-100 dark:bg-gray-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Notification ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Registration ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Certification Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Expiry Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y" id="certificationExpiryTableBody">
+                                <!-- Dummy Certification Expiry Rows -->
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="CERT-001">
+                                    <td class="px-6 py-4 whitespace-nowrap">CERT-001</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">REG-501</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">First Aid Certification</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-blue-500 font-semibold">2024-03-01</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="text-red-500 hover:text-red-700 deleteNotificationBtn" aria-label="Delete Notification" data-id="CERT-001">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700" data-id="CERT-002">
+                                    <td class="px-6 py-4 whitespace-nowrap">CERT-002</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">REG-502</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Forklift Operator License</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-blue-500 font-semibold">2024-02-10</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button class="text-red-500 hover:text-red-700 deleteNotificationBtn" aria-label="Delete Notification" data-id="CERT-002">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to handle deletion of a notification row
+            function handleDeleteNotification(event) {
+                const deleteButton = event.target.closest('.deleteNotificationBtn');
+                if (deleteButton) {
+                    const row = deleteButton.closest('tr');
+                    if (row) {
+                        // Optional: Add a confirmation dialog before deleting
+                        if (confirm('Are you sure you want to delete this notification?')) {
+                            row.remove(); // Remove the row from the table
+                            console.log(`Notification with ID ${deleteButton.dataset.id} deleted.`);
+                            // In a real application, you would also send a request to your backend
+                            // to delete the notification from the database.
+                        }
+                    }
+                }
+            }
+
+            // Attach event listeners to each table body
+            document.getElementById('itemExpiryTableBody').addEventListener('click', handleDeleteNotification);
+            document.getElementById('lowStockTableBody').addEventListener('click', handleDeleteNotification);
+            document.getElementById('certificationExpiryTableBody').addEventListener('click', handleDeleteNotification);
+        });
+    </script>
+</body>
+</html>

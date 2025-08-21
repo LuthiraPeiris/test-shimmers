@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+
+    <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+        <div class="text-lg font-bold">Analytics</div>
+    </header>
+
+    <main class="p-6">
+        <section class="bg-white p-4 rounded-lg shadow mb-6">
+            <ul class="mt-4 space-y-4">
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#stock-level-report'">
+                    <i class="fas fa-boxes text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Stock Level Report</h3>
+                        <p>Display current stock levels for all inventory items.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#inventory-valuation-report'">
+                    <i class="fas fa-dollar-sign text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Inventory Valuation Report</h3>
+                        <p>Calculate the total monetary value of the inventory.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#aging-inventory-report'">
+                    <i class="fas fa-clock text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Aging Inventory Report</h3>
+                        <p>Identify items approaching expiry.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#dead-stock-report'">
+                    <i class="fas fa-trash-alt text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Dead Stock Report</h3>
+                        <p>Highlight items with no recent movement over a predefined period.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#fast-slow-moving-report'">
+                    <i class="fas fa-chart-line text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Fast & Slow Moving Item Report</h3>
+                        <p>Categorize inventory based on sales/movement frequency.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#customer-invoice-report'">
+                    <i class="fas fa-file-invoice text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Customer Invoice Report</h3>
+                        <p>Display invoices generated per customer.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#supplier-invoice-report'">
+                    <i class="fas fa-file-invoice-dollar text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Supplier Invoice Report</h3>
+                        <p>Display invoices from suppliers.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#sales-order-report'">
+                    <i class="fas fa-shopping-cart text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Sales Order Report</h3>
+                        <p>Analyze orders placed by individual customers.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#quotation-report'">
+                    <i class="fas fa-file-alt text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Quotation Report</h3>
+                        <p>Track generated quotations for potential sales.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#return-order-report'">
+                    <i class="fas fa-undo text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Return Order Report</h3>
+                        <p>Monitor returned orders and their reasons.</p>
+                    </div>
+                </li>
+                <li class="flex items-center p-4 border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" onclick="location.href='#certification-report'">
+                    <i class="fas fa-certificate text-blue-600 mr-3"></i>
+                    <div>
+                        <h3 class="font-semibold">Certification Report</h3>
+                        <p>Track and verify certifications related to products, suppliers, employees, or machinery.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+</body>
+</html>

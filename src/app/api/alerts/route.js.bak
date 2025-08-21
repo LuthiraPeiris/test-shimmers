@@ -1,0 +1,85 @@
+// api/alerts/route.js
+
+let allAlerts = {
+    itemExpiry: [
+      { id: 'EXP-001', itemCode: 'ITM-101', itemName: 'Milk (2L)', quantity: 5, expiryDate: '2023-12-31' },
+      { id: 'EXP-002', itemCode: 'ITM-105', itemName: 'Yogurt (Strawberry)', quantity: 12, expiryDate: '2024-01-15' },
+    ],
+    lowStock: [
+      { id: 'LSTK-001', itemCode: 'ITM-203', itemName: 'Printer Paper (Ream)', currentQuantity: 8, reorderLevel: 10, notificationDate: '2023-12-20' },
+      { id: 'LSTK-002', itemCode: 'ITM-310', itemName: 'AA Batteries (Pack)', currentQuantity: 3, reorderLevel: 5, notificationDate: '2023-12-18' },
+    ],
+    certificationExpiry: [
+      { id: 'CERT-001', registrationId: 'REG-501', certificationName: 'First Aid Certification', expiryDate: '2024-03-01' },
+      { id: 'CERT-002', registrationId: 'REG-502', certificationName: 'Forklift Operator License', expiryDate: '2024-02-10' },
+    ],
+  };
+  
+  // Helper to generate unique IDs
+  const generateId = (type) => {
+    const prefix = {
+      itemExpiry: 'EXP-',
+      lowStock: 'LSTK-',
+      certificationExpiry: 'CERT-',
+    }[type];
+    return `${prefix}${Date.now()}`;
+  };
+  
+  // GET: Retrieve alerts by type and search term
+  export async function GET(req) {
+    const { searchParams } = new URL(req.url);
+    const type = searchParams.get("type"); // e.g., 'itemExpiry'
+    const search = (searchParams.get("search") || "").toLowerCase();
+  
+    if (!type || !allAlerts[type]) {
+      return new Response(JSON.stringify({ error: "Invalid or missing alert type" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  
+    let filteredAlerts = allAlerts[type];
+  
+    if (search) {
+      filteredAlerts = filteredAlerts.filter(alert =>
+        Object.values(alert).some(value =>
+          String(value).toLowerCase().includes(search)
+        )
+      );
+    }
+  
+    return new Response(JSON.stringify({ alerts: filteredAlerts }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+  
+  // POST: Add a new alert
+  export async function POST(req) {
+    try {
+      const newAlertData = await req.json();
+      const { type, ...data } = newAlertData;
+  
+      if (!type || !allAlerts[type]) {
+        return new Response(JSON.stringify({ error: "Invalid or missing alert type" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+  
+      const newAlert = { id: generateId(type), ...data };
+      allAlerts[type].push(newAlert);
+  
+      return new Response(JSON.stringify(newAlert), {
+        status: 201,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      console.error('POST error:', error);
+      return new Response(JSON.stringify({ error: "Internal server error" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  }
+  

@@ -1,0 +1,441 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import '../globals.css';
+import SalesPortalHeader from '../components/sales-portal/SalesPortalHeader';
+import SalesPortalNav from '../components/sales-portal/SalesPortalNav';
+import SalesOrderSection from '../components/sales-portal/SalesOrderSection';
+import DeliverySection from '../components/sales-portal/DeliverySection';
+import InvoiceSection from '../components/sales-portal/InvoiceSection';
+import SalesOrderModal from '../components/sales-portal/SalesOrderModal';
+import DeliveryModal from '../components/sales-portal/DeliveryModal';
+import InvoiceModal from '../components/sales-portal/InvoiceModal';
+import SalesOrderItemsModal from '../components/sales-portal/SalesOrderItemModals';
+import DeliveryItemsModal from '../components/sales-portal/DeliveryItemsModal';
+import InvoiceItemsModal from '../components/sales-portal/InvoiceItemsModal';
+import ItemModal from '../components/sales-portal/ItemModal';
+import { generateId } from '../utils/salesPortalUtils';
+
+const SalesPortalPage = () => {
+    const [activeTab, setActiveTab] = useState('salesOrders');
+    const [salesOrders, setSalesOrders] = useState([]);
+    const [deliveries, setDeliveries] = useState([]);
+    const [invoices, setInvoices] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const [salesOrderItemsData, setSalesOrderItemsData] = useState({});
+    const [deliveryItemsData, setDeliveryItemsData] = useState({});
+    const [invoiceItemsData, setInvoiceItemsData] = useState({});
+
+    const [isSalesOrderModalOpen, setIsSalesOrderModalOpen] = useState(false);
+    const [currentSalesOrder, setCurrentSalesOrder] = useState(null);
+    const [salesOrderModalMode, setSalesOrderModalMode] = useState('add');
+
+    const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
+    const [currentDelivery, setCurrentDelivery] = useState(null);
+    const [deliveryModalMode, setDeliveryModalMode] = useState('add');
+
+    const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+    const [currentInvoice, setCurrentInvoice] = useState(null);
+    const [invoiceModalMode, setInvoiceModalMode] = useState('add');
+
+    const [isSalesOrderItemsModalOpen, setIsSalesOrderItemsModalOpen] = useState(false);
+    const [currentSalesOrderForItems, setCurrentSalesOrderForItems] = useState(null);
+
+    const [isDeliveryItemsModalOpen, setIsDeliveryItemsModalOpen] = useState(false);
+    const [currentDeliveryForItems, setCurrentDeliveryForItems] = useState(null);
+
+    const [isInvoiceItemsModalOpen, setIsInvoiceItemsModalOpen] = useState(false);
+    const [currentInvoiceForItems, setCurrentInvoiceForItems] = useState(null);
+
+    const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+    const [currentItemModalMode, setCurrentItemModalMode] = useState('add');
+    const [currentItemData, setCurrentItemData] = useState(null);
+    const [parentEntityType, setParentEntityType] = useState(null);
+    const [parentEntityId, setParentEntityId] = useState(null);
+
+    const fetchSalesOrders = async (search = '') => {
+        setLoading(true);
+        try {
+            const dummyOrders = [
+                { so_id: 'SO001', customer_id: 'CUST001', customer_name: 'ABC Corporation', date: '2024-01-15', status: 'CONFIRMED', total_amount: 15000, delivery_created: false },
+                { so_id: 'SO002', customer_id: 'CUST002', customer_name: 'XYZ Industries', date: '2024-01-14', status: 'PENDING', total_amount: 8500, delivery_created: false },
+                { so_id: 'SO003', customer_id: 'CUST003', customer_name: 'Tech Solutions', date: '2024-01-20', status: 'SHIPPED', total_amount: 22000, delivery_created: true },
+            ];
+            const filteredOrders = dummyOrders.filter(order =>
+                order.so_id.toLowerCase().includes(search.toLowerCase()) ||
+                order.customer_name.toLowerCase().includes(search.toLowerCase())
+            );
+            setSalesOrders(filteredOrders);
+        } catch (error) {
+            console.error('Error fetching sales orders:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchDeliveries = async (search = '') => {
+        setLoading(true);
+        try {
+            const dummyDeliveries = [
+                { ex_not_id: 'DEL001', sales_order_id: 'SO001', item_code: 'PROD001', item_name: 'Widget A', quantity: 50, ex_not_date: '2024-01-16', status: 'DELIVERED', invoice_created: true },
+                { ex_not_id: 'DEL002', sales_order_id: 'SO002', item_code: 'PROD003', item_name: 'Gadget X', quantity: 85, ex_not_date: '2024-01-15', status: 'IN_TRANSIT', invoice_created: false },
+            ];
+            const filteredDeliveries = dummyDeliveries.filter(delivery =>
+                delivery.ex_not_id.toLowerCase().includes(search.toLowerCase()) ||
+                delivery.item_name.toLowerCase().includes(search.toLowerCase())
+            );
+            setDeliveries(filteredDeliveries);
+        } catch (error) {
+            console.error('Error fetching deliveries:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchInvoices = async (search = '') => {
+        setLoading(true);
+        try {
+            const dummyInvoices = [
+                { invoice_id: 'INV001', sales_order_id: 'SO001', delivery_id: 'DEL001', customer_id: 'CUST001', due_date: '2024-02-15', discount: 5, total_amount: 4500, status: 'PAID' },
+                { invoice_id: 'INV002', sales_order_id: 'SO003', delivery_id: null, customer_id: 'CUST003', due_date: '2024-02-28', discount: 0, total_amount: 22000, status: 'PENDING' },
+            ];
+            const filteredInvoices = dummyInvoices.filter(invoice =>
+                invoice.invoice_id.toLowerCase().includes(search.toLowerCase()) ||
+                invoice.customer_id.toLowerCase().includes(search.toLowerCase())
+            );
+            setInvoices(filteredInvoices);
+        } catch (error) {
+            console.error('Error fetching invoices:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (activeTab === 'salesOrders') {
+            fetchSalesOrders(searchTerm);
+        } else if (activeTab === 'deliveries') {
+            fetchDeliveries(searchTerm);
+        } else if (activeTab === 'invoices') {
+            fetchInvoices(searchTerm);
+        }
+    }, [activeTab, searchTerm]);
+
+    const handleTabChange = (tabId) => {
+        setActiveTab(tabId);
+        setSearchTerm('');
+    };
+
+    const handleSearch = (term) => {
+        setSearchTerm(term);
+    };
+
+    const handleAddSalesOrder = () => {
+        setCurrentSalesOrder(null);
+        setSalesOrderModalMode('add');
+        setIsSalesOrderModalOpen(true);
+    };
+
+    const handleEditSalesOrder = (order) => {
+        setCurrentSalesOrder(order);
+        setSalesOrderModalMode('edit');
+        setIsSalesOrderModalOpen(true);
+    };
+
+    const handleDeleteSalesOrder = async (id) => {
+        if (window.confirm(`Are you sure you want to delete Sales Order ${id}?`)) {
+            setSalesOrders(salesOrders.filter(order => order.so_id !== id));
+            setSalesOrderItemsData(prev => {
+                const newState = { ...prev };
+                delete newState[id];
+                return newState;
+            });
+        }
+    };
+
+    const handleSaveSalesOrder = async (formData) => {
+        if (salesOrderModalMode === 'add') {
+            const newOrder = { ...formData, so_id: generateId('SO') };
+            setSalesOrders([...salesOrders, newOrder]);
+        } else {
+            setSalesOrders(salesOrders.map(order => order.so_id === formData.so_id ? formData : order));
+        }
+        setIsSalesOrderModalOpen(false);
+    };
+
+    const handleAddDelivery = () => {
+        setCurrentDelivery(null);
+        setDeliveryModalMode('add');
+        setIsDeliveryModalOpen(true);
+    };
+
+    const handleEditDelivery = (delivery) => {
+        setCurrentDelivery(delivery);
+        setDeliveryModalMode('edit');
+        setIsDeliveryModalOpen(true);
+    };
+
+    const handleDeleteDelivery = async (id) => {
+        if (window.confirm(`Are you sure you want to delete Delivery ${id}?`)) {
+            setDeliveries(deliveries.filter(delivery => delivery.ex_not_id !== id));
+            setDeliveryItemsData(prev => {
+                const newState = { ...prev };
+                delete newState[id];
+                return newState;
+            });
+        }
+    };
+
+    const handleSaveDelivery = async (formData) => {
+        if (deliveryModalMode === 'add') {
+            const newDelivery = { ...formData, ex_not_id: generateId('DEL') };
+            setDeliveries([...deliveries, newDelivery]);
+        } else {
+            setDeliveries(deliveries.map(delivery => delivery.ex_not_id === formData.ex_not_id ? formData : delivery));
+        }
+        setIsDeliveryModalOpen(false);
+    };
+
+    const handleAddInvoice = () => {
+        setCurrentInvoice(null);
+        setInvoiceModalMode('add');
+        setIsInvoiceModalOpen(true);
+    };
+
+    const handleEditInvoice = (invoice) => {
+        setCurrentInvoice(invoice);
+        setInvoiceModalMode('edit');
+        setIsInvoiceModalOpen(true);
+    };
+
+    const handleDeleteInvoice = async (id) => {
+        if (window.confirm(`Are you sure you want to delete Invoice ${id}?`)) {
+            setInvoices(invoices.filter(invoice => invoice.invoice_id !== id));
+            setInvoiceItemsData(prev => {
+                const newState = { ...prev };
+                delete newState[id];
+                return newState;
+            });
+        }
+    };
+
+    const handleSaveInvoice = async (formData) => {
+        if (invoiceModalMode === 'add') {
+            const newInvoice = { ...formData, invoice_id: generateId('INV') };
+            setInvoices([...invoices, newInvoice]);
+        } else {
+            setInvoices(invoices.map(invoice => invoice.invoice_id === formData.invoice_id ? formData : invoice));
+        }
+        setIsInvoiceModalOpen(false);
+    };
+
+    const handleViewSalesOrderItems = (order) => {
+        setCurrentSalesOrderForItems(order);
+        setIsSalesOrderItemsModalOpen(true);
+    };
+
+    const handleViewDeliveryItems = (delivery) => {
+        setCurrentDeliveryForItems(delivery);
+        setIsDeliveryItemsModalOpen(true);
+    };
+
+    const handleViewInvoiceItems = (invoice) => {
+        setCurrentInvoiceForItems(invoice);
+        setIsInvoiceItemsModalOpen(true);
+    };
+
+    const handleAddItem = (entityType, entityId) => {
+        setParentEntityType(entityType);
+        setParentEntityId(entityId);
+        setCurrentItemModalMode('add');
+        setCurrentItemData(null);
+        setIsItemModalOpen(true);
+    };
+
+    const handleEditItem = (entityType, entityId, item) => {
+        setParentEntityType(entityType);
+        setParentEntityId(entityId);
+        setCurrentItemModalMode('edit');
+        setCurrentItemData(item);
+        setIsItemModalOpen(true);
+    };
+
+    const handleDeleteItem = (entityType, entityId, itemId) => {
+        if (window.confirm('Are you sure you want to delete this item?')) {
+            if (entityType === 'salesOrder') {
+                setSalesOrderItemsData(prev => ({
+                    ...prev,
+                    [entityId]: prev[entityId].filter(item => item.Item_ID !== itemId)
+                }));
+            } else if (entityType === 'delivery') {
+                setDeliveryItemsData(prev => ({
+                    ...prev,
+                    [entityId]: prev[entityId].filter(item => item.Item_ID !== itemId)
+                }));
+            } else if (entityType === 'invoice') {
+                setInvoiceItemsData(prev => ({
+                    ...prev,
+                    [entityId]: prev[entityId].filter(item => item.Item_ID !== itemId)
+                }));
+            }
+        }
+    };
+
+    const handleSaveItem = (itemFormData) => {
+        if (currentItemModalMode === 'add') {
+            const newItem = { ...itemFormData, Item_ID: generateId('ITM') };
+            if (parentEntityType === 'salesOrder') {
+                setSalesOrderItemsData(prev => ({
+                    ...prev,
+                    [parentEntityId]: [...(prev[parentEntityId] || []), { ...newItem, Sales_Order_ID: parentEntityId }]
+                }));
+            } else if (parentEntityType === 'delivery') {
+                setDeliveryItemsData(prev => ({
+                    ...prev,
+                    [parentEntityId]: [...(prev[parentEntityId] || []), { ...newItem, Delivery_ID: parentEntityId }]
+                }));
+            } else if (parentEntityType === 'invoice') {
+                setInvoiceItemsData(prev => ({
+                    ...prev,
+                    [parentEntityId]: [...(prev[parentEntityId] || []), { ...newItem, Invoice_ID: parentEntityId }]
+                }));
+            }
+        } else {
+            if (parentEntityType === 'salesOrder') {
+                setSalesOrderItemsData(prev => ({
+                    ...prev,
+                    [parentEntityId]: prev[parentEntityId].map(item =>
+                        item.Item_ID === currentItemData.Item_ID ? { ...item, ...itemFormData } : item
+                    )
+                }));
+            } else if (parentEntityType === 'delivery') {
+                setDeliveryItemsData(prev => ({
+                    ...prev,
+                    [parentEntityId]: prev[parentEntityId].map(item =>
+                        item.Item_ID === currentItemData.Item_ID ? { ...item, ...itemFormData } : item
+                    )
+                }));
+            } else if (parentEntityType === 'invoice') {
+                setInvoiceItemsData(prev => ({
+                    ...prev,
+                    [parentEntityId]: prev[parentEntityId].map(item =>
+                        item.Item_ID === currentItemData.Item_ID ? { ...item, ...itemFormData } : item
+                    )
+                }));
+            }
+        }
+        setIsItemModalOpen(false);
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 text-gray-900">
+            <SalesPortalHeader onSearch={handleSearch} />
+            <SalesPortalNav activeTab={activeTab} onTabChange={handleTabChange} />
+
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {loading ? (
+                    <div className="text-center text-gray-500 py-10">
+                        <div className="loading-spinner mx-auto mb-4"></div>
+                        Loading data...
+                    </div>
+                ) : (
+                    <>
+                        {activeTab === 'salesOrders' && (
+                            <SalesOrderSection
+                                salesOrders={salesOrders}
+                                onAddOrder={handleAddSalesOrder}
+                                onEditOrder={handleEditSalesOrder}
+                                onDeleteOrder={handleDeleteSalesOrder}
+                                onViewItems={handleViewSalesOrderItems}
+                            />
+                        )}
+                        {activeTab === 'deliveries' && (
+                            <DeliverySection
+                                deliveries={deliveries}
+                                onAddDelivery={handleAddDelivery}
+                                onEditDelivery={handleEditDelivery}
+                                onDeleteDelivery={handleDeleteDelivery}
+                                onViewItems={handleViewDeliveryItems}
+                            />
+                        )}
+                        {activeTab === 'invoices' && (
+                            <InvoiceSection
+                                invoices={invoices}
+                                onAddInvoice={handleAddInvoice}
+                                onEditInvoice={handleEditInvoice}
+                                onDeleteInvoice={handleDeleteInvoice}
+                                onViewItems={handleViewInvoiceItems}
+                            />
+                        )}
+                    </>
+                )}
+            </main>
+
+            <SalesOrderModal
+                isOpen={isSalesOrderModalOpen}
+                onClose={() => setIsSalesOrderModalOpen(false)}
+                onSave={handleSaveSalesOrder}
+                orderData={currentSalesOrder}
+                mode={salesOrderModalMode}
+            />
+            <DeliveryModal
+                isOpen={isDeliveryModalOpen}
+                onClose={() => setIsDeliveryModalOpen(false)}
+                onSave={handleSaveDelivery}
+                deliveryData={currentDelivery}
+                mode={deliveryModalMode}
+                salesOrders={salesOrders}
+            />
+            <InvoiceModal
+                isOpen={isInvoiceModalOpen}
+                onClose={() => setIsInvoiceModalOpen(false)}
+                onSave={handleSaveInvoice}
+                invoiceData={currentInvoice}
+                mode={invoiceModalMode}
+                salesOrders={salesOrders}
+                deliveries={deliveries}
+            />
+
+            <SalesOrderItemsModal
+                isOpen={isSalesOrderItemsModalOpen}
+                onClose={() => setIsSalesOrderItemsModalOpen(false)}
+                salesOrder={currentSalesOrderForItems}
+                items={currentSalesOrderForItems ? salesOrderItemsData[currentSalesOrderForItems.so_id] || [] : []}
+                onAddItem={() => handleAddItem('salesOrder', currentSalesOrderForItems.so_id)}
+                onEditItem={(item) => handleEditItem('salesOrder', currentSalesOrderForItems.so_id, item)}
+                onDeleteItem={(itemId) => handleDeleteItem('salesOrder', currentSalesOrderForItems.so_id, itemId)}
+            />
+            <DeliveryItemsModal
+                isOpen={isDeliveryItemsModalOpen}
+                onClose={() => setIsDeliveryItemsModalOpen(false)}
+                delivery={currentDeliveryForItems}
+                items={currentDeliveryForItems ? deliveryItemsData[currentDeliveryForItems.ex_not_id] || [] : []}
+                onAddItem={() => handleAddItem('delivery', currentDeliveryForItems.ex_not_id)}
+                onEditItem={(item) => handleEditItem('delivery', currentDeliveryForItems.ex_not_id, item)}
+                onDeleteItem={(itemId) => handleDeleteItem('delivery', currentDeliveryForItems.ex_not_id, itemId)}
+            />
+            <InvoiceItemsModal
+                isOpen={isInvoiceItemsModalOpen}
+                onClose={() => setIsInvoiceItemsModalOpen(false)}
+                invoice={currentInvoiceForItems}
+                items={currentInvoiceForItems ? invoiceItemsData[currentInvoiceForItems.invoice_id] || [] : []}
+                onAddItem={() => handleAddItem('invoice', currentInvoiceForItems.invoice_id)}
+                onEditItem={(item) => handleEditItem('invoice', currentInvoiceForItems.invoice_id, item)}
+                onDeleteItem={(itemId) => handleDeleteItem('invoice', currentInvoiceForItems.invoice_id, itemId)}
+            />
+
+            <ItemModal
+                isOpen={isItemModalOpen}
+                onClose={() => setIsItemModalOpen(false)}
+                onSave={handleSaveItem}
+                itemData={currentItemData}
+                mode={currentItemModalMode}
+                parentEntityType={parentEntityType}
+            />
+        </div>
+    );
+};
+
+export default SalesPortalPage;
